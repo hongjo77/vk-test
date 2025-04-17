@@ -7,6 +7,8 @@ project(vk-test)
 # C++ 표준 설정
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(Anime4KCPP_USE_CUDA OFF)
+set(Anime4KCPP_USE_OPENCL OFF)
 
 # Vulkan 찾기
 find_package(Vulkan REQUIRED)
