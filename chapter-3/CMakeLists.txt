@@ -22,7 +22,7 @@ add_executable (chapter-3
   ${IMGUI_SOURCES}
   )
 
-include_directories("C:/SDL2/include")
+include_directories("C:/SDL2/include/SDL2")
 link_directories("C:/SDL2/lib")
 
 set_property(TARGET chapter-3 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:chapter-3>)
