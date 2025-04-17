@@ -22,7 +22,10 @@ add_executable (chapter-3
   ${IMGUI_SOURCES}
   )
 
-  set_property(TARGET chapter-3 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:chapter-3>)
+include_directories("C:/SDL2/include")
+link_directories("C:/SDL2/lib")
+
+set_property(TARGET chapter-3 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:chapter-3>)
 target_include_directories(chapter-3 PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR} 
     ${CMAKE_SOURCE_DIR}/third_party/glm
@@ -41,4 +44,5 @@ target_link_libraries(chapter-3
     tinyobjloader
     stb_image
     anime4kcpp
+    SDL2
 )

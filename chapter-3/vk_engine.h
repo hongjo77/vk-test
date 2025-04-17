@@ -1,6 +1,6 @@
 ﻿// vulkan_guide.h : Include file for standard system include files,
 // or project specific include files.
-
+#define GLM_ENABLE_EXPERIMENTAL
 #pragma once
 
 #include <vk_types.h>
