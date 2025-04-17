@@ -7,21 +7,20 @@ project(vk-test)
 # C++ 표준 설정
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(Anime4KCPP_USE_CUDA OFF)
-set(Anime4KCPP_USE_OPENCL OFF)
 
 # Vulkan 찾기
 find_package(Vulkan REQUIRED)
 
 # 서드파티 라이브러리 디렉토리 추가
 add_subdirectory(third_party)
-add_subdirectory(third_party/anime4kcpp)
 
 # Chapter-3 프로젝트 추가
 add_subdirectory(chapter-3)
 
 find_program(GLSL_VALIDATOR glslangValidator HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
 
+file(COPY ${CMAKE_SOURCE_DIR}/third_party/waifu2x-ncnn-vulkan/waifu2x-ncnn-vulkan.exe
+     DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 file(GLOB_RECURSE GLSL_SOURCE_FILES
     "${PROJECT_SOURCE_DIR}/shaders/*.frag"
