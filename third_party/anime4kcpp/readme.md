@@ -1,97 +1,141 @@
 <div align="center">
-  <img src="./images/Logo.png">
+    <img src="./images/Logo.png">
 </div>
 
-<h1 align="center">
-  Anime4KCPP
-  </br>
-  <a href="https://github.com/TianZerL/Anime4KCPP/releases"><img alt="Latest GitHub release" src="https://img.shields.io/github/v/release/TianZerL/Anime4KCPP?color=red&label=Latest%20release&style=flat-square"></a>
-  <img alt="Platforms" src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux%20%7C%20macOS%20%7C%20Android-blue?style=flat-square">
-  <img alt="License" src="https://img.shields.io/github/license/TianZerL/Anime4KCPP?style=flat-square">
-</h1>
+# Anime4KCPP v3
+Anime4KCPP is a high performance anime upscaler.
 
+Anime4KCPP v3 uses CNN based algorithm, and aims to be simple and efficient.
 
-### [**📄中文文档**](README.cn.md)
-### [**📁Download**](https://github.com/TianZerL/Anime4KCPP/releases)
-### [**📖Wiki**](https://github.com/TianZerL/Anime4KCPP/wiki)
+# Build
+## Dependency
+To build Anime4KCPP v3 you need CMake and a C++17 compiler, and most dependencies will be resolved automatically by CMake if you have internet.
 
-# About Anime4KCPP
-Anime4KCPP provides an optimized [bloc97's Anime4K](https://github.com/bloc97/Anime4K) algorithm version 0.9, and it also provides its own CNN algorithm [ACNet](https://github.com/TianZerL/Anime4KCPP/wiki/ACNet), it provides a variety of way to use, including preprocessing and real-time playback, it aims to be a high performance tools to process both image and video.  
-This project is for learning and the exploration task of algorithm course in SWJTU.
+***List of dependencies that need to be prepared by yourself:***
 
-# About Anime4K09
-Anime4K is a simple high-quality anime upscale algorithm. The version 0.9 does not use any machine learning approaches, and can be very fast in real-time processing or pretreatment.
+| Dependency                                                | CMake option      | Module     |
+| --------------------------------------------------------- | ----------------- | ---------- |
+| [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) | AC_CORE_WITH_CUDA | core(CUDA) |
+| [libavcodec](https://ffmpeg.org)                          | AC_BUILD_VIDEO    | video      |
+| [libavformat](https://ffmpeg.org)                         | AC_BUILD_VIDEO    | video      |
+| [libavutil](https://ffmpeg.org)                           | AC_BUILD_VIDEO    | video      |
+| [Qt](https://www.qt.io)                                   | AC_BUILD_GUI      | gui        |
 
-# About ACNet
-ACNet is a CNN based anime upscale algorithm. It aims to provide both high-quality and high-performance.  
-HDN mode can better denoise, HDN level is from 1 to 3, higher for better denoising but may cause blur and lack of detail.  
-for detail, see [wiki page](https://github.com/TianZerL/Anime4KCPP/wiki/ACNet).
+- The minimum tested version of the CUDA Toolkit is 11
+- The minimum version of libav is ffmpeg 4
+- Both Qt5 and Qt6 should be OK
 
-# Why Anime4KCPP
-- Cross-platform, building have already tested in Windows ,Linux, and macOS (Thanks for [NightMachinary](https://github.com/NightMachinary)).
-- GPU acceleration support with all GPUs that implemented OpenCL 1.2 or newer.
-- CUDA acceleration.
-- High performance and low memory usage.
-- Support multiple usage methods.
+***List of dependencies that can be resolved automatically:***
 
-# Usage method
-- CLI
-- GUI
-- DirectShow Filter (Windows only, for MPC-HC/BE, potplayer and other DirectShow based players)
-- AviSynthPlus plugin
-- VapourSynth plugin
-- Android APP
-- C API binding
-- [Python API binding](https://github.com/TianZerL/pyanime4k)
-- [GLSL shader](https://github.com/TianZerL/ACNetGLSL)(For MPV based players)
+| Dependency                                                                                                                            | CMake option                | Module              |
+| ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ------------------- |
+| [Avisynth SDK](https://github.com/AviSynth/AviSynthPlus/tree/master/avs_core/include)                                                 | AC_BUILD_FILTER_AVISYNTH    | filter(avisynth)    |
+| [CLI11](https://github.com/CLIUtils/CLI11)                                                                                            | AC_BUILD_CLI                | cli                 |
+| [DirectShow base classes](https://github.com/microsoft/Windows-classic-samples/Samples/Win7Samples/multimedia/directshow/baseclasses) | AC_BUILD_FILTER_DIRECTSHOW  | filter(directshow)  |
+| [Eigen3](https://gitlab.com/libeigen/eigen)                                                                                           | AC_CORE_WITH_EIGEN3         | core(eigen3)        |
+| [OpenCL SDK](https://github.com/KhronosGroup/OpenCL-SDK)                                                                              | AC_CORE_WITH_OPENCL         | core(opencl)        |
+| [pybind11](https://github.com/pybind/pybind11)                                                                                        | AC_BUILD_BINDING_PYTHON     | binding(python)     |
+| [ruapu](https://github.com/nihui/ruapu)                                                                                               | N/A                         | core                |
+| [stb](https://github.com/nothings/stb)                                                                                                | N/A                         | core                |
+| [VapourSynth SDK](https://github.com/vapoursynth/vapoursynth/tree/master/include)                                                     | AC_BUILD_FILTER_VAPOURSYNTH | filter(vapoursynth) |
 
-***For more infomation on how to use them, see [wiki](https://github.com/TianZerL/Anime4KCPP/wiki).***
+## Platform
+### Windows
+Tested with MinGW-w64 and MSVC.
 
-# Result
-![examples](/images/example.png)
+*Build with MinGW-w64:*
+```powershell
+mkdir build; cd build
+cmake -G "MinGW Makefiles" .. -DAC_ENABLE_STATIC_CRT=ON
+cmake --build . --config Release -j8
+cd bin
+./ac_cli -v
+```
 
-# Performance
-Single image (RGB):
+To setup ffmpeg's libav for building video module on Windows, it is recommended to add an `AC_PATH_FFMPEG` variable to CMake, but you can also use `pkg-config` for Windows. `AC_PATH_FFMPEG` should be a path to the ffmpeg's root folder witch contains `lib` and `include`.
 
-|Processor|Type|Algorithm|1080p -> 4K|512p -> 1024p|Benchmark score|
--|-|-|-|-|-
-|AMD Ryzen 2600|CPU|ACNet|0.630 s|0.025 s|17.0068|
-|Nvidia GTX1660 Super|GPU|ACNet|0.067 s|0.005 s|250|
-|AMD Ryzen 2500U|CPU|ACNet|1.304 s|0.049 s|7.59301|
-|AMD Vega 8|GPU|ACNet|0.141 s|0.010 s|105.263|
-|Snapdragon 820|CPU|ACNet|5.532 s|0.180 s|1.963480|
-|Adreno 530|GPU|ACNet|3.133 s|0.130 s|3.292723|
-|Snapdragon 855|CPU|ACNet|3.998 s|0.204 s *|3.732736|
-|Adreno 640|GPU|ACNet|1.611 s|0.060 s|6.389776|
-|Intel Atom N2800|CPU|ACNet|11.827 s|0.350 s|0.960984|
-|Raspberry Pi Zero W|CPU|ACNet|114.94 s|3.312 s|0.101158|
+To add `AC_PATH_FFMPEG` to CMake, click `Add Entry` button in `cmake-gui` or use `-DAC_PATH_FFMPEG="path/to/ffmpeg/root"` in terminal.
 
-*Snapdragon 855 may use Cortex-A55 core under low loads, which may lead to its performance not as good as Snapdragon 820
+You can download ffmpeg with sdk from [BtBN](https://github.com/BtbN/FFmpeg-Builds/releases) (`ffmpeg-master-latest-win64-gpl-shared.zip` or `ffmpeg-master-latest-win64-lgpl-shared.zip`) or [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) (`ffmpeg-release-full-shared.7z`) for Windows.
 
-# Building
-For information on how to compile Anime4KCPP, see [wiki](https://github.com/TianZerL/Anime4KCPP/wiki/Building).
+***You need MSVC to build directshow filter, witch is only available on Windows.***
 
-# Related projects
-### pyanime4k  
-[pyanime4k](https://github.com/TianZerL/pyanime4k) is an Anime4KCPP API binding in Python, easy and fast. 
+### Linux
+Tested with gcc and clang.
 
-### ACNetGLSL
-[ACNetGLSL](https://github.com/TianZerL/ACNetGLSL) is an ACNet (Anime4KCPP Net) re-implemented in GLSL for real-time anime upscaling.
+```shell
+mkdir build && cd build
+cmake ..
+cmake --build . --config Release -j8
+cd bin
+./ac_cli -v
+```
 
-# Projects that use Anime4KCPP
-- [AaronFeng753/Waifu2x-Extension-GUI](https://github.com/AaronFeng753/Waifu2x-Extension-GUI)
-- [k4yt3x/video2x](https://github.com/k4yt3x/video2x)
+### Termux
+To build with opencl support, you need install `ocl-icd` package, OpenCL SDK from Khronos seems not to be worked with termux.
 
-# Credits
-- [Anime4K](https://github.com/bloc97/Anime4K)
-- [cmdline](https://github.com/tanakh/cmdline)
-- [CUDA](https://developer.nvidia.com/cuda-zone)
-- [FFmpeg](https://ffmpeg.org/)
-- [OpenCL](https://www.khronos.org/opencl/)
-- [OpenCV](https://opencv.org/)
-- [Qt](https://www.qt.io/)
+```shell
+pkg install cmake clang ocl-icd opencl-clhpp opencl-headers
+mkdir build && cd build
+cmake .. -DAC_CORE_WITH_OPENCL=ON
+cmake --build . --config Release -j8
+cd bin
+LD_LIBRARY_PATH=/vendor/lib64:$PREFIX/lib ./ac_cli -l
+```
 
-# Acknowledgement
-[semmyenator](https://github.com/semmyenator) : Traditional Chinese, Japanese and French translation for GUI
+### WASM
+Only tested with Emscripten. See [wasm test](test/wasm/).
 
-All images are drawn by my friend ***King of learner*** and authorized to use, only for demonstration, do not use without permission.
+### Mac OS
+Untested. If you do, please provide feedback.
+
+## CMake options
+
+| Option                               | Description                                        | Default     |
+| ------------------------------------ | -------------------------------------------------- | ----------- |
+| AC_SHARED_LIB                        | build as a shared library                          | OFF         |
+| AC_CORE_WITH_EIGEN3                  | build core with eigen3                             | OFF         |
+| AC_CORE_WITH_SSE                     | build core with x86 sse                            | Auto detect |
+| AC_CORE_WITH_AVX                     | build core with x86 avx                            | Auto detect |
+| AC_CORE_WITH_FMA                     | build core with x86 fma and avx                    | Auto detect |
+| AC_CORE_WITH_NEON                    | build core with arm neon                           | Auto detect |
+| AC_CORE_WITH_WASM_SIMD128            | build core with wasm simd128                       | Auto detect |
+| AC_CORE_WITH_OPENCL                  | build core with opencl                             | OFF         |
+| AC_CORE_WITH_CUDA                    | build core with cuda                               | OFF         |
+| AC_CORE_ENABLE_FAST_MATH             | enable fast math for core                          | OFF         |
+| AC_CORE_ENABLE_IMAGE_IO              | enable image file read and write for core          | ON          |
+| AC_BUILD_CLI                         | build cli                                          | ON          |
+| AC_BUILD_GUI                         | build gui                                          | OFF         |
+| AC_BUILD_VIDEO                       | build video module                                 | OFF         |
+| AC_BUILD_FILTER_AVISYNTH             | build avisynth filter                              | OFF         |
+| AC_BUILD_FILTER_VAPOURSYNTH          | build vapoursynth filter                           | OFF         |
+| AC_BUILD_FILTER_DIRECTSHOW           | build directshow filter (Windows MSVC only)        | OFF         |
+| AC_BUILD_FILTER_AVISYNTH_VAPOURSYNTH | build an avisynth and vapoursynth universal filter | OFF         |
+| AC_BUILD_BINDING_C                   | build c binding for core                           | OFF         |
+| AC_BUILD_BINDING_PYTHON              | build python binding for core                      | OFF         |
+| AC_TOOLS_BENCHMARK                   | build benchmark                                    | OFF         |
+| AC_TEST_UTIL                         | build util module test                             | OFF         |
+| AC_TEST_VIDEO                        | build video module test                            | OFF         |
+| AC_TEST_WASM                         | build wasm test (Emscripten only)                  | OFF         |
+| AC_ENABLE_LTO                        | enable LTO                                         | OFF         |
+| AC_ENABLE_STATIC_CRT                 | enable static link crt                             | OFF         |
+| AC_DISABLE_RTTI                      | disable rtti                                       | OFF         |
+| AC_DISABLE_EXCEPTION                 | disable exception                                  | OFF         |
+| AC_DISABLE_PIC                       | disable pic or pie                                 | OFF         |
+
+There are some convenient presets:
+
+`AC_PRESET_RELEASE`
+- AC_CORE_WITH_OPENCL
+- AC_CORE_WITH_CUDA
+- AC_CORE_ENABLE_FAST_MATH
+- AC_CORE_ENABLE_IMAGE_IO
+- AC_BUILD_CLI
+- AC_BUILD_GUI
+- AC_BUILD_VIDEO
+- AC_BUILD_FILTER_AVISYNTH_VAPOURSYNTH
+- AC_BUILD_FILTER_DIRECTSHOW (MSVC only)
+
+# LICENSE
+The [video module](/video/) is under GPLv3, any module built with the video module are also under GPLv3, others under MIT.
+For example, if [cli](/cli/) build with video module, it is under GPLv3, otherwise, it is under MIT.

@@ -1,42 +1,33 @@
-if(Build_CLI)
-    project(Anime4KCPP_CLI LANGUAGES CXX)
+project(ac_cli VERSION 3.0.0.0 LANGUAGES CXX)
 
-    if(NOT Enable_Image_IO)
-        message (
-            FATAL_ERROR "To compile the CLI, you cannot turn off image IO support from the core\n"
-        )
-    endif()
+set(CLI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(CLI_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
-    aux_source_directory(src SOURCE)
-    
-    file(GLOB INCLUDE include/*.hpp)
+include(${DEPENDENCY_DIR}/cli11.cmake)
 
-    add_executable(${PROJECT_NAME} ${INCLUDE} ${SOURCE})
+add_executable(ac_cli
+    ${CLI_SOURCE_DIR}/src/Main.cpp
+    ${CLI_SOURCE_DIR}/src/Options.cpp
+)
 
-    target_include_directories(${PROJECT_NAME} PRIVATE include)
+target_include_directories(ac_cli PRIVATE
+    $<BUILD_INTERFACE:${CLI_SOURCE_DIR}/include>
+)
 
-    target_compile_definitions(
-        ${PROJECT_NAME} 
-        PRIVATE 
-            $<$<BOOL:${Use_Boost_filesystem}>:USE_BOOST_FILESYSTEM>
-    )
+target_link_libraries(ac_cli PRIVATE
+    ac
+    ac_util
+    $<$<TARGET_EXISTS:ac_video>:ac_video>
+    dep::cli11
+)
 
-    if(Other_Optimization_For_Other)
-        if(MSVC)
-            if(CMAKE_CXX_COMPILER_ID MATCHES "IntelLLVM")
-                target_compile_options(${PROJECT_NAME} PRIVATE /O3)
-            endif()
-        else()
-            target_compile_options(${PROJECT_NAME} PRIVATE -Ofast)
-            target_link_options(${PROJECT_NAME} PRIVATE -Ofast)
-        endif()
-    endif()
+target_compile_definitions(ac_cli PRIVATE
+    $<$<TARGET_EXISTS:ac_video>:AC_CLI_ENABLE_VIDEO>
+)
 
-    include(${TOP_DIR}/cmake/ThirdPartyForCLI.cmake)
+ac_check_enable_static_crt(ac_cli)
 
-    install(
-        TARGETS ${PROJECT_NAME}
-        RUNTIME DESTINATION bin
-    )
-
-endif()
+install(
+    TARGETS ac_cli
+    RUNTIME DESTINATION bin
+)
