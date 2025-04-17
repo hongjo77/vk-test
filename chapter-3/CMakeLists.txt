@@ -25,14 +25,19 @@ add_executable (chapter-3
 include_directories("C:/SDL2/include/SDL2")
 link_directories("C:/SDL2/lib")
 
+set(ANIME4KCPP_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/third_party/anime4kcpp)
 set_property(TARGET chapter-3 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:chapter-3>)
+
 target_include_directories(chapter-3 PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR} 
     ${CMAKE_SOURCE_DIR}/third_party/glm
     ${CMAKE_SOURCE_DIR}/third_party/glfw/include
     ${CMAKE_SOURCE_DIR}/third_party/imgui
     ${CMAKE_SOURCE_DIR}/third_party/imgui/backends
-    ${CMAKE_SOURCE_DIR}/third_party/anime4kcpp/include
+    ${ANIME4KCPP_INCLUDE_DIR}/core/include
+    ${ANIME4KCPP_INCLUDE_DIR}/cli/include
+    ${ANIME4KCPP_INCLUDE_DIR}/headers/include
+    ${ANIME4KCPP_INCLUDE_DIR}/include
 )
 
 target_link_libraries(chapter-3 
