@@ -9,7 +9,9 @@ elseif(Use_OpenCV_With_MINGW_For_Clang)
     set(MINGW True)
 endif()
 
-find_package(OpenCV REQUIRED)
+if(ENABLE_OPENCV)
+  find_package(OpenCV QUIET)
+endif()
 
 target_include_directories(
     ${PROJECT_NAME} 
