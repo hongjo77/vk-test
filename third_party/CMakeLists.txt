@@ -13,6 +13,20 @@ target_sources(vkbootstrap PRIVATE
   vkbootstrap/VkBootstrap.cpp
   )
 
+# GLFW (MinGW-w64)
+add_library(glfw3 STATIC IMPORTED)
+set_target_properties(glfw3 PROPERTIES
+  IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/glfw/lib-mingw-w64/libglfw3.a"
+  INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/glfw/include"
+)
+
+# Volk (single-file loader)
+add_library(volk STATIC
+  volk/volk.c
+)
+target_include_directories(volk PUBLIC volk)
+target_link_libraries(volk PUBLIC Vulkan::Vulkan)
+
 target_include_directories(vkbootstrap PUBLIC vkbootstrap)
 target_link_libraries(vkbootstrap PUBLIC Vulkan::Vulkan $<$<BOOL:UNIX>:${CMAKE_DL_LIBS}>)
 

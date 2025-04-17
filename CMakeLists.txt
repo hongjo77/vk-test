@@ -14,13 +14,7 @@ set(Anime4KCPP_USE_OPENCL OFF)
 find_package(Vulkan REQUIRED)
 
 # 서드파티 라이브러리 디렉토리 추가
-add_subdirectory(third_party/glm)
-add_subdirectory(third_party/glfw)
-add_subdirectory(third_party/vkbootstrap)
-add_subdirectory(third_party/imgui)
-add_subdirectory(third_party/stb_image)
-add_subdirectory(third_party/tinyobjloader)
-add_subdirectory(third_party/vma)
+add_subdirectory(third_party)
 add_subdirectory(third_party/anime4kcpp)
 
 # Chapter-3 프로젝트 추가
