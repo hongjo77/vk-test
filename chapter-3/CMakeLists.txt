@@ -30,7 +30,7 @@ set_property(TARGET chapter-3 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FI
 
 target_include_directories(chapter-3 PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR} 
-    ${CMAKE_SOURCE_DIR}/third_party/glm
+    ${CMAKE_SOURCE_DIR}/third_party
     ${CMAKE_SOURCE_DIR}/third_party/glfw/include
     ${CMAKE_SOURCE_DIR}/third_party/imgui
     ${CMAKE_SOURCE_DIR}/third_party/imgui/backends
@@ -41,8 +41,8 @@ target_include_directories(chapter-3 PUBLIC
 )
 
 target_link_libraries(chapter-3 
-    Vulkan::Vulkan 
-    glm 
+    Vulkan::Vulkan
+    glm
     vkbootstrap 
     glfw3
     vma
